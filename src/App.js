@@ -1,23 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Main from "./Pages/Main";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="size-full min-h-screen max-h-screen min-w-screen max-w-screen overflow-auto relative overflow-hidden main-container bg-gradient-to-l from-red-100 to-blue-100">
+      {/* Dot one */}
+      <div className="rounded-full bg-sky-300 absolute p-10 left-10 top-10 border-dotted border-sky-600 border-4" />
+      {/* App Container */}
+      <BrowserRouter>
+        <div className="app-container bg-sky-500/[.1] rounded-md backdrop-blur-sm border-sky-500/[.5] border-0 border-solid shadow-xl relative">
+          <Routes>
+            <Route path="*" element={<Main />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
     </div>
   );
 }
