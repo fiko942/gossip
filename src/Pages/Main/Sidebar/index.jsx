@@ -2,7 +2,7 @@ import { MoreVert, ArrowBack } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import users from "../../../data/users";
-import { Route, Routes } from "react-router-dom";
+import Mesages from "./Messages";
 
 console.log(users);
 
@@ -93,13 +93,7 @@ export default function Sidebar() {
             </button>
           </div>
         </div>
-        {/* Search box */}
-        <div className="flex align-center w-full bg-sky-700 px-4 py-2">
-          <input
-            placeholder="Search conversation"
-            className="caret-red-500 border-2 px-2 py-1 rounded-lg outline-0 w-full active:px-4 focus:px-4 transition-all duration-250 eas-in"
-          />
-        </div>
+        <Mesages />
       </div>
 
       {/* Menu */}
