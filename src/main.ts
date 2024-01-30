@@ -1,11 +1,13 @@
 import Server from "./class/Server";
 import Auth from "./class/Auth";
-import Database from './class/Database'
-import User from './class/User'
+import Database from "./class/Database";
+import User from "./class/User";
+import Encryption from "./class/Encryption";
 
-const database = new Database()
-const auth = new Auth({database});
-const user = new User({database});
+const encryption = new Encryption();
+const database = new Database();
+const user = new User({ database, encryption });
+const auth = new Auth({ database, encryption, user });
 const server = new Server({ auth });
 
 server.start();

@@ -12,9 +12,8 @@ export default async function googleCallback(
       throw new Error("Invalid params");
     }
 
-    await auth.googleCallback(code);
-    res.sendStatus(200);
-    // res.redirect(`/?code=${code}`);
+    const sessionHash = await auth.googleCallback(code, req);
+    res.redirect(`/?session=${sessionHash}`);
   } catch (err) {
     res.json({
       error: true,
