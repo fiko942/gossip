@@ -1,12 +1,17 @@
 import { google, Auth as OAuth2 } from "googleapis";
 import Server from "./Server";
+import Database from './Database'
 
 export default class Auth {
   private authorization: Authorization;
   private server: Server;
   private oAuth2Client: any;
+  private database: Database
 
-  constructor() {
+  constructor({database}: {
+    database: Database
+  }) {
+    this.database = database
     this.server = new Server({ auth: this });
     this.authorization = {
       google: {
