@@ -1,6 +1,7 @@
 import { google, Auth as OAuth2 } from "googleapis";
 import Server from "./Server";
 import Database from './Database'
+import { v4 as uuidv4 } from 'uuid'
 
 export default class Auth {
   private authorization: Authorization;
@@ -37,6 +38,10 @@ export default class Auth {
       access_type: "offline",
       scope: this.authorization.google.scopes,
     });
+  }
+
+  public generateToken(): string {
+    return uuidv4()
   }
 
   public async googleCallback(code: string): Promise<void> {

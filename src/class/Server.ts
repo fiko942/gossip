@@ -10,7 +10,6 @@ export default class Server {
     this.port = 39466;
     this.auth = auth;
   }
-
   private handleRouter(app: Application): void {
     app.get("/auth/google", (req, res) =>
       controller.auth.google(req, res, this.auth)
