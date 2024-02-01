@@ -10,7 +10,9 @@ function App() {
   return (
     <div className="size-full min-h-screen max-h-screen min-w-screen max-w-screen overflow-auto relative overflow-hidden main-container bg-gradient-to-l from-red-100 to-blue-100">
       {/* Dot one */}
-      <AuthWrapper onAuthenticated={() => setAuthenticated(true)} />
+      {!authenticated && (
+        <AuthWrapper onAuthenticated={() => setAuthenticated(true)} />
+      )}
       <div className="rounded-full bg-sky-300 absolute p-10 left-10 top-10 border-dotted border-sky-600 border-4" />
       {/* App Container */}
       {authenticated && (

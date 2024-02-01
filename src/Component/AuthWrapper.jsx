@@ -3,9 +3,32 @@ import DataUsageIcon from "@mui/icons-material/DataUsage";
 import google from "../Icons/google.webp";
 import icon from "../Icons/icon.png";
 import config from "../config.js";
+import Session from "../Utils/Session.js";
+
+const session = new Session();
 
 export default function AuthWrapper({ onAuthenticated }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const validateSession = () => {
+    setLoading(true);
+    session.validateSession(session.getCurrentSessionHash(), (state) => {
+      setLoading(false);
+      if (state) {
+        onAuthenticated();
+      }
+    });
+  };
+
+  useEffect(() => {
+    validateSession();
+
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has("session")) {
+      session.saveSession(searchParams.get("session"));
+      window.location.href = "/";
+    }
+  }, []);
 
   return (
     <div

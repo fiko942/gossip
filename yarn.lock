@@ -8894,6 +8894,11 @@ stop-iteration-iterator@^1.0.0:
   dependencies:
     internal-slot "^1.0.4"
 
+storage-manager-js@^4.2.6-5:
+  version "4.2.6-5"
+  resolved "https://registry.yarnpkg.com/storage-manager-js/-/storage-manager-js-4.2.6-5.tgz#4378ca67898453bee915b7be2911cc9dc390dcb9"
+  integrity sha512-zzWymrg8vdMKJlVHTVU5+QoE9BvBcBgH0ARHEcjD+WaPU8UhB+1Q5jwlEQoBEMx1dBuqM7YYycVqylclzfI69g==
+
 string-length@^4.0.1:
   version "4.0.2"
   resolved "https://registry.npmjs.org/string-length/-/string-length-4.0.2.tgz"
