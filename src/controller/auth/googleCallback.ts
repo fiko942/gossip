@@ -1,5 +1,6 @@
 import Auth from "../../class/Auth";
 import { Request, Response } from "express";
+import config from "../../config";
 
 export default async function googleCallback(
   req: Request,
@@ -13,7 +14,7 @@ export default async function googleCallback(
     }
 
     const sessionHash = await auth.googleCallback(code, req);
-    res.redirect(`/?session=${sessionHash}`);
+    res.redirect(`${config.frontendHomeUrl}/?session=${sessionHash}`);
   } catch (err) {
     res.json({
       error: true,

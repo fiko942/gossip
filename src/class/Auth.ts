@@ -67,6 +67,48 @@ export default class Auth {
   }
 
   /**
+   * The function `validateSession` checks if a session hash exists in the database, retrieves the
+   * associated email, checks if the email exists in the user table, retrieves the alias associated
+   * with the email, and returns an object with the alias if all checks pass, otherwise it returns
+   * null.
+   * @param {string} hash - The `hash` parameter is a string that represents the session hash. It is
+   * used to query the `auth_session` table to validate the session.
+   * @returns The function `validateSession` returns a Promise that resolves to either a
+   * `ValidateSession` object or `null`.
+   */
+  public async validateSession(
+    hash: string,
+    {
+      ip,
+    }: {
+      ip: string;
+    }
+  ): Promise<ValidateSession | null> {
+    const sql: string = `SELECT email FROM auth_session WHERE session_hash = "${hash}" LIMIT 1`;
+    const res: any = await this.database.query(sql);
+    if (res.length < 1) {
+      return null;
+    }
+
+    const { email } = res[0];
+    const exists = await this.user.exists(email);
+    if (!exists) {
+      return null;
+    }
+
+    const aliasSql: string = `SELECT alias FROM user WHERE email = "${email}" LIMIT 1`;
+    const resAlias: any = await this.database.query(aliasSql);
+
+    // Update the ip from the current user
+    const updateIpSql: string = `UPDATE user SET ip = "${ip}" WHERE email = "${email}"`;
+    await this.database.query(updateIpSql);
+
+    return {
+      alias: resAlias[0].alias,
+    };
+  }
+
+  /**
    * The function `googleCallback` handles the callback from Google OAuth, retrieves user information,
    * checks if the user exists, creates a new user if necessary, generates a session, and returns the
    * session token.

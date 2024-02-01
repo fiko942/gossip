@@ -63,7 +63,7 @@ export default class User {
 
     let sess = "";
     const chars: string =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+";
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     const len = 120;
     for (let i = 0; i < len; i++) {
       sess += chars[Math.floor(Math.random() * chars.length)];

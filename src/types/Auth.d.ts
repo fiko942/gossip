@@ -8,4 +8,8 @@ declare global {
       scopes: string[];
     };
   }
+
+  interface ValidateSession {
+    alias: string;
+  }
 }
