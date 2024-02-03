@@ -27,7 +27,7 @@ export default class User {
    * with that session.
    * @returns a Promise that resolves to either a Profile object or null.
    */
-  public async profileDetail(sessionHash: string): Promise<Profile | null> {
+  public async detail(sessionHash: string): Promise<Profile | null> {
     const sql: string = `
     SELECT 
       user.name, 
@@ -38,9 +38,9 @@ export default class User {
       user.alias, 
       user.ip, 
       user.timezone
-    FROM user,
-    LEFT JOIN auth_session ON auth_session.email = user.email
-    WHERE auth_session.hash = "${sessionHash}"
+    FROM user
+    JOIN auth_session ON auth_session.email = user.email
+    WHERE auth_session.session_hash = "${sessionHash}"
     LIMIT 1
     `;
     const res: any = await this.database.query(sql);
@@ -49,16 +49,15 @@ export default class User {
     }
 
     const data = res[0];
-    console.log(data);
     return {
-      id: 1,
-      name: "",
-      email: "",
-      banned: false,
-      ip: "",
-      timezone: "",
-      alias: "",
-      avatar: "",
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      banned: data.banned === 1,
+      ip: data.ip,
+      timezone: data.timezone,
+      alias: data.alias,
+      avatar: data.avatar,
     };
   }
 

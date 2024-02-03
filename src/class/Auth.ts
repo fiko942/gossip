@@ -26,7 +26,7 @@ export default class Auth {
     this.encryption = encryption;
     this.user = user;
     this.database = database;
-    this.server = new Server({ auth: this });
+    this.server = new Server({ auth: this, user: this.user });
     this.authorization = {
       google: {
         clientSecret: "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",

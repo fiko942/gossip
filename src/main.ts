@@ -8,6 +8,6 @@ const encryption = new Encryption();
 const database = new Database();
 const user = new User({ database, encryption });
 const auth = new Auth({ database, encryption, user });
-const server = new Server({ auth });
+const server = new Server({ auth, user });
 
 server.start();

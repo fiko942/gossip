@@ -4,16 +4,19 @@ import controller from "../controller";
 // @ts-ignore
 import cors from "cors";
 import bodyParser from "body-parser";
+import User from "./User";
 
 const requireAuthPaths: string[] = ["/"];
 
 export default class Server {
   public port: number;
   private auth: Auth;
+  private user: User;
 
-  constructor({ auth }: { auth: Auth }) {
+  constructor({ auth, user }: { auth: Auth; user: User }) {
     this.port = 39466;
     this.auth = auth;
+    this.user = user;
   }
 
   private anonymousGuard(app: Application): void {
@@ -49,6 +52,9 @@ export default class Server {
     );
     app.post("/auth/validateSession", (req, res) =>
       controller.auth.validateSession(req, res, this.auth)
+    );
+    app.get("/user/detail", (req, res) =>
+      controller.user.detail(req, res, this.user)
     );
   }
 
