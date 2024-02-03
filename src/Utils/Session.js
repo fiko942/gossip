@@ -24,7 +24,7 @@ export default class Session {
 
   validateSession(hash, onState) {
     if (typeof hash !== "string") {
-      return false;
+      onState(false);
     }
 
     const url = `${config.api.base}/auth/validateSession`;

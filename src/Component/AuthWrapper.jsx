@@ -11,7 +11,6 @@ export default function AuthWrapper({ onAuthenticated }) {
   const [loading, setLoading] = useState(true);
 
   const validateSession = () => {
-    setLoading(true);
     session.validateSession(session.getCurrentSessionHash(), (state) => {
       setLoading(false);
       if (state) {

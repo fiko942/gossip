@@ -4,8 +4,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import users from "../../../data/users";
 import Mesages from "./Messages";
 
-console.log(users);
-
 const menus = [
   {
     name: "Profile",
@@ -25,7 +23,7 @@ const menus = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ user }) {
   const [actionSource, setActionSource] = useState(null);
   const [actionSourcePos, setActionSourcePos] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
@@ -61,9 +59,9 @@ export default function Sidebar() {
           {/* Profile avatar */}
           {location.pathname === "/" && (
             <img
-              alt="Wiji Fiko Teren"
-              title="Wiji Fiko Teren"
-              src="https://avatars.githubusercontent.com/u/84434815?v=4"
+              alt={user.name}
+              title={user.name}
+              src={user.avatar}
               className="w-12 ml-2 rounded-full"
             />
           )}

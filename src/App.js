@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Main from "./Pages/Main";
 import AuthWrapper from "./Component/AuthWrapper";
 import { useEffect, useState } from "react";
+import Session from "./Utils/Session";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
