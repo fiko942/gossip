@@ -5,6 +5,8 @@ import controller from "../controller";
 import cors from "cors";
 import bodyParser from "body-parser";
 
+const requireAuthPaths: string[] = ["/"];
+
 export default class Server {
   public port: number;
   private auth: Auth;
@@ -13,6 +15,31 @@ export default class Server {
     this.port = 39466;
     this.auth = auth;
   }
+
+  private anonymousGuard(app: Application): void {
+    app.use(async (req, res, next) => {
+      const i = requireAuthPaths.findIndex((x) => x === req.path);
+      const sessionHash = req.header("X-Token");
+      if (i >= 0 || typeof sessionHash === "string") {
+        const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+        const v = await this.auth.validateSession(sessionHash || "", {
+          ip: ip as string,
+        });
+        if (v === null) {
+          return res.json({
+            error: true,
+            msg: "(401) Unauthorized",
+            statusCode: 401,
+          });
+        } else {
+          return next();
+        }
+      } else {
+        next();
+      }
+    });
+  }
+
   private handleRouter(app: Application): void {
     app.get("/auth/google", (req, res) =>
       controller.auth.google(req, res, this.auth)
@@ -31,6 +58,7 @@ export default class Server {
     // Apply middleware
     app.use(cors());
     app.use(bodyParser({ limit: "10MB", extended: true }));
+    this.anonymousGuard(app);
 
     this.handleRouter(app);
 

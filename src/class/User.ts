@@ -21,6 +21,48 @@ export default class User {
   }
 
   /**
+   * The function `profileDetail` retrieves profile details for a user based on a session hash.
+   * @param {string} sessionHash - The sessionHash parameter is a string that represents the unique
+   * identifier for a user session. It is used to retrieve the profile details of the user associated
+   * with that session.
+   * @returns a Promise that resolves to either a Profile object or null.
+   */
+  public async profileDetail(sessionHash: string): Promise<Profile | null> {
+    const sql: string = `
+    SELECT 
+      user.name, 
+      user.email, 
+      user.avatar, 
+      user.banned, 
+      user.id, 
+      user.alias, 
+      user.ip, 
+      user.timezone
+    FROM user,
+    LEFT JOIN auth_session ON auth_session.email = user.email
+    WHERE auth_session.hash = "${sessionHash}"
+    LIMIT 1
+    `;
+    const res: any = await this.database.query(sql);
+    if (res.length < 1) {
+      return null;
+    }
+
+    const data = res[0];
+    console.log(data);
+    return {
+      id: 1,
+      name: "",
+      email: "",
+      banned: false,
+      ip: "",
+      timezone: "",
+      alias: "",
+      avatar: "",
+    };
+  }
+
+  /**
    * The exists function checks if a user with the given email or id exists in the database.
    * @param {number | string} emailOrId - The `emailOrId` parameter can be either a number or a string.
    * It represents either the email address or the ID of a user.
