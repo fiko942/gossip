@@ -5,6 +5,9 @@ import controller from "../controller";
 import cors from "cors";
 import bodyParser from "body-parser";
 import User from "./User";
+import { Socket, Server as SocketServer } from "socket.io";
+import http from "http";
+import https from "https";
 
 const requireAuthPaths: string[] = ["/"];
 
@@ -58,6 +61,12 @@ export default class Server {
     );
   }
 
+  private handleSocket(io: SocketServer): void {
+    io.on("connection", (socket) => {
+      console.log("new user connected");
+    });
+  }
+
   public start(): void {
     const app = express();
 
@@ -68,7 +77,11 @@ export default class Server {
 
     this.handleRouter(app);
 
-    app.listen(this.port, () => {
+    const server = http.createServer(app);
+    const io = new SocketServer(server);
+    this.handleSocket(io);
+
+    server.listen(this.port, () => {
       console.log(
         `Application is currently running on port: ${this.port} ✅✅`
       );
