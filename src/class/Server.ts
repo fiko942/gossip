@@ -63,7 +63,10 @@ export default class Server {
 
   private handleSocket(io: SocketServer): void {
     io.on("connection", (socket) => {
-      console.log("new user connected");
+      console.log(socket.handshake.query);
+      socket.on("set-active-conversation", (data) => {
+        console.log(data);
+      });
     });
   }
 
@@ -78,7 +81,13 @@ export default class Server {
     this.handleRouter(app);
 
     const server = http.createServer(app);
-    const io = new SocketServer(server);
+    const io = new SocketServer(server, {
+      cors: {
+        methods: ["POST", "GET"],
+        credentials: true,
+        origin: "http://localhost:3000",
+      },
+    });
     this.handleSocket(io);
 
     server.listen(this.port, () => {
