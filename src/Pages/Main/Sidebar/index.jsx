@@ -23,7 +23,7 @@ const menus = [
   },
 ];
 
-export default function Sidebar({ user }) {
+export default function Sidebar({ user, socket }) {
   const [actionSource, setActionSource] = useState(null);
   const [actionSourcePos, setActionSourcePos] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
@@ -91,7 +91,7 @@ export default function Sidebar({ user }) {
             </button>
           </div>
         </div>
-        <Mesages />
+        <Mesages socket={socket} />
       </div>
 
       {/* Menu */}

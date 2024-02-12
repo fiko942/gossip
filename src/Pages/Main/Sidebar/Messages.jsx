@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import users from "../../../data/users";
 
-export default function Messages() {
+export default function Messages({ socket }) {
   const location = useLocation();
   const [winSize, setWinSize] = useState({
     width: window.innerWidth,
@@ -10,6 +10,10 @@ export default function Messages() {
   });
   const [search, setSearch] = useState("");
   const [activeConversation, setActiveConversation] = useState(null);
+
+  useEffect(() => {
+    socket.io.emit("set-active-conversation", { id: activeConversation });
+  }, [activeConversation]);
 
   useEffect(() => {
     const handleResize = () => {

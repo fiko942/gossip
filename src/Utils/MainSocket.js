@@ -1,6 +1,19 @@
 import config from "../config";
-import { Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 
 export default class MainSocket {
-  constructor() {}
+  socketUrl;
+  constructor({ session }) {
+    this.socketUrl = config.api.base
+      .replace("https", "ws")
+      .replace("http", "ws");
+
+    this.socket = io(this.socketUrl, {
+      query: {
+        session: session,
+      },
+    });
+
+    this.io = this.socket;
+  }
 }

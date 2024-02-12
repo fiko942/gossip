@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 import request from "../../request";
 import { useEffect, useState } from "react";
 
-export default function Main() {
+export default function Main({ socket }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function Main() {
   return (
     user !== null && (
       <MainContainer>
-        <Sidebar user={user} />
+        <Sidebar user={user} socket={socket} />
       </MainContainer>
     )
   );

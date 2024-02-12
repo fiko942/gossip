@@ -14,7 +14,7 @@ export default function AuthWrapper({ onAuthenticated }) {
     session.validateSession(session.getCurrentSessionHash(), (state) => {
       setLoading(false);
       if (state) {
-        onAuthenticated();
+        onAuthenticated(session.getCurrentSessionHash());
       }
     });
   };
