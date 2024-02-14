@@ -15,13 +15,22 @@ export default class Server {
   public port: number;
   private auth: Auth;
   private user: User;
+  public socketConnections: SocketConnection[];
 
   constructor({ auth, user }: { auth: Auth; user: User }) {
     this.port = 39466;
     this.auth = auth;
     this.user = user;
+    this.socketConnections = [];
   }
 
+  /**
+   * The function is a middleware that checks if a request path requires authentication and validates
+   * the session token before allowing access to the next middleware.
+   * @param {Application} app - The `app` parameter is an instance of the `Application` class, which
+   * represents the Express application. It is used to configure middleware and routes for the
+   * application.
+   */
   private anonymousGuard(app: Application): void {
     app.use(async (req, res, next) => {
       const i = requireAuthPaths.findIndex((x) => x === req.path);
@@ -46,6 +55,11 @@ export default class Server {
     });
   }
 
+  /**
+   * The handleRouter function sets up the routes for authentication and user details.
+   * @param {Application} app - The `app` parameter is an instance of the Express application. It is
+   * used to define the routes and handle the incoming requests.
+   */
   private handleRouter(app: Application): void {
     app.get("/auth/google", (req, res) =>
       controller.auth.google(req, res, this.auth)
@@ -62,8 +76,30 @@ export default class Server {
   }
 
   private handleSocket(io: SocketServer): void {
-    io.on("connection", (socket) => {
-      console.log(socket.handshake.query);
+    io.on("connection", async (socket) => {
+      const ip = socket.handshake.address;
+      const { session } = socket.handshake.query;
+      if (typeof session !== "string") {
+        return socket.disconnect(true);
+      }
+      const valid = await this.auth.validateSession(session, { ip });
+      if (valid === null) {
+        return socket.disconnect(true);
+      }
+
+      // Add socket to  the public route
+      const s = {
+        socket,
+        alias: valid.alias,
+        sessionHash: session,
+      };
+      this.socketConnections.push(s);
+
+      socket.on("disconnect", () => {
+        // Remove socket from global socket connnections
+        this.socketConnections = this.socketConnections.filter((x) => x !== s);
+      });
+
       socket.on("set-active-conversation", (data) => {
         console.log(data);
       });
