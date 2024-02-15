@@ -75,6 +75,12 @@ export default class Server {
     );
   }
 
+  /**
+   * The function `handleSocket` handles socket connections, validates sessions, adds sockets to the
+   * public route, and removes sockets when they disconnect.
+   * @param {SocketServer} io - The `io` parameter is an instance of the SocketServer class. It
+   * represents the server-side socket.io object that handles socket connections and events.
+   */
   private handleSocket(io: SocketServer): void {
     io.on("connection", async (socket) => {
       const ip = socket.handshake.address;
@@ -88,16 +94,25 @@ export default class Server {
       }
 
       // Add socket to  the public route
+      const userId = await this.user.getIdByAlias(valid.alias);
+      const isBanned = await this.user.isBanned(userId);
+      if (isBanned) {
+        return socket.disconnect(true);
+      }
+
+      this.user.setOnline(userId, true);
       const s = {
         socket,
         alias: valid.alias,
         sessionHash: session,
+        userId,
       };
       this.socketConnections.push(s);
 
       socket.on("disconnect", () => {
         // Remove socket from global socket connnections
         this.socketConnections = this.socketConnections.filter((x) => x !== s);
+        this.user.setOnline(userId, false);
       });
 
       socket.on("set-active-conversation", (data) => {
@@ -106,6 +121,10 @@ export default class Server {
     });
   }
 
+  /**
+   * This function starts a TypeScript server using Express, applies middleware, sets up a socket
+   * server, and listens on a specified port.
+   */
   public start(): void {
     const app = express();
 

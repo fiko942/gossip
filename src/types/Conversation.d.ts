@@ -9,5 +9,7 @@ declare global {
     isGroup: boolean;
     groupName: string | null;
     icon: string | null;
+    pinned: boolean;
+    last_chat: number | null;
   }
 }

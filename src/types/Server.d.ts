@@ -7,5 +7,6 @@ declare global {
     socket: Socket;
     alias: string;
     sessionHash: string;
+    userId: number;
   }
 }

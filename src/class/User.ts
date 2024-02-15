@@ -21,6 +21,22 @@ export default class User {
   }
 
   /**
+   * The function `getIdByAlias` retrieves the ID of a user based on their alias from a database.
+   * @param {string} alias - The `alias` parameter is a string that represents the alias of a user.
+   * @returns a Promise that resolves to a number, which is the id of the user with the given alias.
+   */
+  public async getIdByAlias(alias: string): Promise<number> {
+    const sql: string = `SELECT id FROM user WHERE alias = "${alias
+      .split('"')
+      .join("")}"`;
+    const res: any = await this.database.query(sql);
+    if (res.length < 1) {
+      throw new Error("User does not exists!");
+    }
+    return res[0].id;
+  }
+
+  /**
    * The function `profileDetail` retrieves profile details for a user based on a session hash.
    * @param {string} sessionHash - The sessionHash parameter is a string that represents the unique
    * identifier for a user session. It is used to retrieve the profile details of the user associated
@@ -125,6 +141,38 @@ export default class User {
   }
 
   /**
+   * The function sets the online status of a user in a database by updating the last online timestamp
+   * and the is_online flag.
+   * @param {number} userId - The userId parameter is the unique identifier of the user whose online
+   * status is being updated. It is of type number.
+   * @param {boolean} state - The `state` parameter is a boolean value that represents the online state
+   * of a user. If `state` is `true`, it means the user is online, and if `state` is `false`, it means
+   * the user is offline.
+   */
+  public async setOnline(userId: number, state: boolean): Promise<void> {
+    const currentEpoch: number = moment().unix();
+    const sql: string = `UPDATE user SET last_online = ${currentEpoch}, is_online = ${
+      state ? 1 : 0
+    } WHERE id = ${userId}`;
+    await this.database.query(sql);
+  }
+
+  /**
+   * The function "isBanned" checks if a user with a given ID is banned or not.
+   * @param {number} userId - The `userId` parameter is a number that represents the unique identifier
+   * of a user.
+   * @returns a Promise that resolves to a boolean value.
+   */
+  public async isBanned(userId: number): Promise<boolean> {
+    const sql: string = `SELECT banned FROM user WHERE id = ${userId}`;
+    const res: any = await this.database.query(sql);
+    if (res.length < 1) {
+      throw new Error("User does not exists");
+    }
+    return res[0].banned == 1;
+  }
+
+  /**
    * The function creates a new user in a database with the provided name, email, avatar, banned
    * status, and IP address.
    * @param  - - `name`: The name of the user being created (string).
@@ -170,7 +218,9 @@ export default class User {
         banned,
         ip,
         timezone,
-        _password
+        _password,
+        last_online,
+        is_online
       ) VALUES(
         "${name}",
         "${email}",
@@ -181,7 +231,9 @@ export default class User {
         ${banned ? 1 : 0},
         "${ip}",
         "${timezone || "Asia/Jakarta"}",
-        null
+        null,
+        null,
+        0
       )
     `;
     await this.database.query(sql);
